@@ -1,0 +1,25 @@
+# Виртуальное окружение
+venv/
+.venv/
+env/
+.env/
+
+# Кэш Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Файлы зависимостей блокировки (если используешь pipenv или poetry)
+Pipfile.lock
+poetry.lock
+
+# Логи и временные файлы
+*.log
+
+# Базы данных временные
+
+
+# Системные и IDE файлы
+.DS_Store
+.idea/
+.vscode/

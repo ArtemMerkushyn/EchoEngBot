@@ -1,0 +1,14 @@
+{
+    "hello": [
+        "Hi!",
+        "Hello!",
+        "Hey there!",
+        "Hi there!",
+        "Good morning!"
+    ],
+    "how are you": [
+        "I'm good!",
+        "Doing great!",
+        "All is well!"
+    ]
+}
