@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>EchoEngBot</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        label, input, button, textarea { display: block; margin: 10px 0; width: 100%; max-width: 400px; }
+        .response { margin-top: 20px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <h1>🤖 EchoEngBot</h1>
+
+    <h2>Ask the bot</h2>
+    <input type="text" id="messageInput" placeholder="Введите фразу...">
+    <button onclick="askBot()">Send</button>
+    <div id="chatResponse" class="response"></div>
+
+    <h2>Train the bot</h2>
+    <input type="text" id="teachPhrase" placeholder="Фраза">
+    <input type="text" id="teachAnswer" placeholder="Ответ">
+    <button onclick="teachBot()">Train</button>
+    <div id="teachResponse" class="response"></div>
+
+    <script>
+        async function askBot() {
+            const message = document.getElementById("messageInput").value;
+            const res = await fetch("/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message })
+            });
+            const data = await res.json();
+            document.getElementById("chatResponse").innerText = "Answer: " + data.response;
+        }
+
+        async function teachBot() {
+            const phrase = document.getElementById("teachPhrase").value;
+            const answer = document.getElementById("teachAnswer").value;
+            const res = await fetch("/teach", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ phrase, answer })
+            });
+            const data = await res.json();
+            document.getElementById("teachResponse").innerText = data.message;
+        }
+    </script>
+
+</body>
+</html>

@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 import json
 import random
 import os
@@ -18,6 +18,11 @@ def load_database():
 def save_database(data):
     with open(DB_FILE, 'w') as f:
         json.dump(data, f, indent=4)
+
+# Главная страница — отдаём HTML
+@app.route("/")
+def index():
+    return send_from_directory("static", "index.html")
 
 # Получение ответа от бота
 @app.route("/chat", methods=["POST"])

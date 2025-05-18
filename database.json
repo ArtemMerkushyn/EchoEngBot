@@ -10,5 +10,8 @@
         "I'm good!",
         "Doing great!",
         "All is well!"
+    ],
+    "what is your name": [
+        "EchoEngBot"
     ]
 }
