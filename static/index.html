@@ -4,27 +4,129 @@
     <meta charset="UTF-8">
     <title>EchoEngBot</title>
     <style>
-        body { font-family: sans-serif; padding: 20px; }
-        label, input, button, textarea { display: block; margin: 10px 0; width: 100%; max-width: 400px; }
-        .response { margin-top: 20px; font-weight: bold; }
+        body {
+            font-family: sans-serif;
+            background: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        .input-group {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 15px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+        }
+        .response {
+            margin-top: 15px;
+            font-weight: bold;
+            color: #333;
+        }
+        .teach-section {
+            margin-top: 30px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 90%;
+            max-width: 400px;
+            border-radius: 10px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
 
-    <h1>🤖 EchoEngBot</h1>
+    <div class="container">
+        <h1>🤖 EchoEngBot</h1>
 
-    <h2>Ask the bot</h2>
-    <input type="text" id="messageInput" placeholder="Введите фразу...">
-    <button onclick="askBot()">Send</button>
-    <div id="chatResponse" class="response"></div>
+        <div class="input-group">
+        <input type="text" id="messageInput" placeholder="Enter your phrase...">
+        <button onclick="askBot()">Ask</button>
+        </div>
+        <div id="chatResponse" class="response"></div>
 
-    <h2>Train the bot</h2>
-    <input type="text" id="teachPhrase" placeholder="Фраза">
-    <input type="text" id="teachAnswer" placeholder="Ответ">
-    <button onclick="teachBot()">Train</button>
-    <div id="teachResponse" class="response"></div>
+        <div class="teach-section">
+        <button onclick="showModal('teachModal')">Teach the bot</button>
+        </div>
+    </div>
+
+    <!-- Modal: Teach the bot -->
+    <div id="teachModal" class="modal">
+        <div class="modal-content">
+        <span class="close" onclick="closeModal('teachModal')">&times;</span>
+        <h2>Teach the bot</h2>
+        <input type="text" id="teachPhrase" placeholder="Phrase">
+        <input type="text" id="teachAnswer" placeholder="Answer">
+        <button onclick="teachBot()">Save</button>
+        <div id="teachResponse" class="response"></div>
+        </div>
+    </div>
 
     <script>
+        function showModal(id) {
+            document.getElementById(id).style.display = 'block';
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+
         async function askBot() {
             const message = document.getElementById("messageInput").value;
             const res = await fetch("/chat", {
@@ -33,7 +135,7 @@
                 body: JSON.stringify({ message })
             });
             const data = await res.json();
-            document.getElementById("chatResponse").innerText = "Answer: " + data.response;
+            document.getElementById("chatResponse").innerText = "Response: " + data.response;
         }
 
         async function teachBot() {
@@ -48,6 +150,5 @@
             document.getElementById("teachResponse").innerText = data.message;
         }
     </script>
-
 </body>
 </html>
