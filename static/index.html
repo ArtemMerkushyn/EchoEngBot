@@ -82,6 +82,41 @@
             font-weight: bold;
             cursor: pointer;
         }
+        .chat-history {
+            text-align-last: left;
+            margin-top: 20px;
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 10px;
+            background-repeat: 5px;
+            background: #f9f9f9;
+            display: none;
+        }
+        .chat-entry {
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .chat-entry.user {
+            justify-content: flex-end;
+        }
+        .chat-entry.bot {
+            justify-content: flex-start;
+        }
+        .chat-bubble{
+            padding: 8px 12px;
+            border-radius: 10px;
+            max-width: 70%;
+        }
+        .chat-entry.user .chat-bubble {
+            background-color: #007BFF;
+            color: white;
+        }
+        .chat-entry.bot .chat-bubble {
+            background-color: #e0e0e0;
+            color: #000;
+        }
     </style>
 </head>
 <body>
@@ -89,14 +124,14 @@
     <div class="container">
         <h1>🤖 EchoEngBot</h1>
 
+        <div id="chatHistory" class="chat-history"></div>
         <div class="input-group">
-        <input type="text" id="messageInput" placeholder="Enter your phrase...">
-        <button onclick="askBot()">Ask</button>
+            <input type="text" id="messageInput" placeholder="Enter your phrase...">
+            <button onclick="askBot()">Ask</button>
         </div>
-        <div id="chatResponse" class="response"></div>
 
         <div class="teach-section">
-        <button onclick="showModal('teachModal')">Teach the bot</button>
+            <button onclick="showModal('teachModal')">Teach the bot</button>
         </div>
     </div>
 
@@ -129,13 +164,29 @@
 
         async function askBot() {
             const message = document.getElementById("messageInput").value;
+            if (!message.trim()) return;
             const res = await fetch("/chat", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ message })
             });
             const data = await res.json();
-            document.getElementById("chatResponse").innerText = "Response: " + data.response;
+
+            const history = document.getElementById("chatHistory");
+            const userEntry = document.createElement("div");
+            userEntry.className = "chat-entry user";
+            userEntry.innerHTML = `<div class="chat-bubble">${message}</div>`;
+
+            const botEntry = document.createElement("div");
+            botEntry.className = "chat-entry bot";
+            botEntry.innerHTML = `<div class="chat-bubble">${data.response}</div>`;
+
+            history.appendChild(userEntry);
+            history.appendChild(botEntry);
+            history.style.display = 'block';
+            history.scrollTop = history.scrollHeight;
+
+            document.getElementById("messageInput").value = "";
         }
 
         async function teachBot() {
