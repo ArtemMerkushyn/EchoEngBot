@@ -104,7 +104,7 @@
         .chat-entry.bot {
             justify-content: flex-start;
         }
-        .chat-bubble{
+        .chat-bubble {
             padding: 8px 12px;
             border-radius: 10px;
             max-width: 70%;
@@ -117,6 +117,12 @@
             background-color: #e0e0e0;
             color: #000;
         }
+        .chat-controls {
+            display: none;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -124,6 +130,10 @@
     <div class="container">
         <h1>🤖 EchoEngBot</h1>
 
+        <div id="chatControls" class="chat-controls">
+            <span></span>
+            <button onclick="clearHistory()">Clear history</button>
+        </div>
         <div id="chatHistory" class="chat-history"></div>
         <div class="input-group">
             <input type="text" id="messageInput" placeholder="Enter your phrase...">
@@ -173,6 +183,8 @@
             const data = await res.json();
 
             const history = document.getElementById("chatHistory");
+            const controls = document.getElementById("chatControls")
+
             const userEntry = document.createElement("div");
             userEntry.className = "chat-entry user";
             userEntry.innerHTML = `<div class="chat-bubble">${message}</div>`;
@@ -183,10 +195,19 @@
 
             history.appendChild(userEntry);
             history.appendChild(botEntry);
-            history.style.display = 'block';
+            history.style.display = "block";
+            controls.style.display = "flex";
             history.scrollTop = history.scrollHeight;
 
             document.getElementById("messageInput").value = "";
+        }
+
+        function clearHistory() {
+            const history = document.getElementById("chatHistory");
+            const controls = document.getElementById("chatControls");
+            history.innerHTML = "";
+            history.style.display = "none";
+            controls.style.display = "none";
         }
 
         async function teachBot() {
