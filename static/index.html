@@ -159,6 +159,7 @@
     <script>
         const chatHistory = document.getElementById("chatHistory");
         const chatControls = document.getElementById("chatControls");
+        let chatData = [];
 
         function showModal(id) {
             document.getElementById(id).style.display = 'block';
@@ -175,21 +176,34 @@
         }
 
         function saveHistoryToLocalStorage() {
-            localStorage.setItem("chatHistory", chatHistory.innerHTML)
+            localStorage.setItem("chatData", JSON.stringify(chatData));
+        }
+
+        function renderChat() {
+            chatHistory.innerHTML = "";
+            chatData.forEach(entry => {
+                const div = document.createElement("div");
+                div.className = `chat-entry ${entry.role}`;
+                div.innerHTML = `<div class="chat-bubble">${entry.text}</div>`;
+                chatHistory.appendChild(div);
+            });
+            chatHistory.style.display = "block";
+            chatControls.style.display = "flex";
+            chatHistory.scrollTop = chatHistory.scrollHeight;
         }
 
         function loadHistoryFromLocalStorage() {
-            const saved = localStorage.getItem("chatHistory");
+            const saved = localStorage.getItem("chatData");
             if(saved) {
-                chatHistory.innerHTML = saved;
-                chatHistory.style.display = "block";
-                chatControls.style.display = "flex";
+                chatData = JSON.parse(saved);
+                renderChat();
             }
         }
 
         async function askBot() {
             const message = document.getElementById("messageInput").value;
             if (!message.trim()) return;
+
             const res = await fetch("/chat", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -197,28 +211,19 @@
             });
             const data = await res.json();
 
-            const userEntry = document.createElement("div");
-            userEntry.className = "chat-entry user";
-            userEntry.innerHTML = `<div class="chat-bubble">${message}</div>`;
-
-            const botEntry = document.createElement("div");
-            botEntry.className = "chat-entry bot";
-            botEntry.innerHTML = `<div class="chat-bubble">${data.response}</div>`;
-
-            chatHistory.appendChild(userEntry);
-            chatHistory.appendChild(botEntry);
-            chatHistory.style.display = "block";
-            chatControls.style.display = "flex";
-            chatHistory.scrollTop = chatHistory.scrollHeight;
-            document.getElementById("messageInput").value = "";
+            chatData.push({ role: "user", text: message });
+            chatData.push({ role: "bot", text: data.response });
+            renderChat();
             saveHistoryToLocalStorage();
+            document.getElementById("messageInput").value = "";
         }
 
         function clearHistory() {
+            chatData = [];
             chatHistory.innerHTML = "";
             chatHistory.style.display = "none";
             chatControls.style.display = "none";
-            localStorage.removeItem("chatHistory");
+            localStorage.removeItem("chatData");
         }
 
         async function teachBot() {
