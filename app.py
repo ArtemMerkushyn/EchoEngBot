@@ -57,5 +57,41 @@ def teach():
     save_database(db)
     return jsonify({"status": "success", "message": f"Phrase '{phrase}' successfully trained."})
 
+# удаление фразы или конкретного ответа к этой фразе
+@app.route("/delete", methods=["POST"])
+def delete_from_bot():
+    data = request.get_json()
+    phrase = data.get("phrase", "").strip().lower()
+    answer = (data.get("answer") or "").strip()
+
+    try:
+        with open(DB_FILE, "r", encoding="utf-8") as f:
+            db = json.load(f)
+    except FileNotFoundError:
+        db = {}
+
+    if phrase not in db:
+        return jsonify({"message": "Phrase not found."})
+
+    if answer:
+        # Удаляем конкретный ответ
+        if answer in db[phrase]:
+            db[phrase].remove(answer)
+            if not db[phrase]:
+                del db[phrase]  # Если больше нет ответов, удаляем всю фразу
+            message = "Answer deleted."
+        else:
+            return jsonify({"message": "Answer not found."})
+    else:
+        # Удаляем всю фразу
+        del db[phrase]
+        message = "Phrase and all answers deleted."
+
+    # Сохраняем изменения
+    with open(DB_FILE, "w", encoding="utf-8") as f:
+        json.dump(db, f, ensure_ascii=False, indent=2)
+
+    return jsonify({"message": message})
+
 if __name__ == "__main__":
     app.run(debug=True)

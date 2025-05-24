@@ -1,29 +1,16 @@
 {
-    "hello": [
-        "Hi!",
-        "Hello!",
-        "Hey there!",
-        "Hi there!",
-        "Good morning!"
-    ],
-    "how are you": [
-        "I'm good!",
-        "Doing great!",
-        "All is well!"
-    ],
-    "what is your name": [
-        "EchoEngBot"
-    ],
-    "xxx": [
-        "wewq fqwf wqf"
-    ],
-    "x": [
-        "xxxxxxx"
-    ],
-    "xx": [
-        "xxxx xx xx x x xxxxxx"
-    ],
-    "z": [
-        "zzz zz zz z zzzz"
-    ]
+  "hello": [
+    "Hi!",
+    "Hello!",
+    "Hey there!",
+    "Good morning!"
+  ],
+  "how are you": [
+    "I'm good!",
+    "Doing great!",
+    "All is well!"
+  ],
+  "what is your name": [
+    "EchoEngBot"
+  ]
 }
