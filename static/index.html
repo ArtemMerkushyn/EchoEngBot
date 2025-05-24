@@ -142,17 +142,28 @@
 
         <div class="teach-section">
             <button onclick="showModal('teachModal')">Teach the bot</button>
+            <button onclick="showModal('deleteModal')">Delete phrase/answer</button>
         </div>
     </div>
 
     <div id="teachModal" class="modal">
         <div class="modal-content">
-        <span class="close" onclick="closeModal('teachModal')">&times;</span>
-        <h2>Teach the bot</h2>
-        <input type="text" id="teachPhrase" placeholder="Phrase">
-        <input type="text" id="teachAnswer" placeholder="Answer">
-        <button onclick="teachBot()">Save</button>
-        <div id="teachResponse" class="response"></div>
+            <span class="close" onclick="closeModal('teachModal')">&times;</span>
+            <h2>Teach the bot</h2>
+            <input type="text" id="teachPhrase" placeholder="Phrase">
+            <input type="text" id="teachAnswer" placeholder="Answer">
+            <button onclick="teachBot()">Save</button>
+            <div id="teachResponse" class="response"></div>
+        </div>
+    </div>
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('deleteModal')">&times;</span>
+            <h2>Delete from bot</h2>
+            <input type="text" id="deletePhrase" placeholder="Phrase">
+            <input type="text" id="deleteAnswer" placeholder="(Optional) Specific answer to delete">
+            <button onclick="deleteFromBot()">Delete</button>
+            <div id="deleteResponse" class="response"></div>
         </div>
     </div>
 
@@ -262,6 +273,22 @@
             });
             const data = await res.json();
             document.getElementById("teachResponse").innerText = data.message;
+        }
+
+        async function deleteFromBot() {
+            const phrase = document.getElementById("deletePhrase").value.trim();
+            const answer = document.getElementById("deleteAnswer").value.trim();
+            
+            if(!phrase) return;
+
+            const res = await fetch("/delete", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ phrase, answer: answer || null })
+            });
+
+            const data = await res.json();
+            document.getElementById("deleteResponse").innerText = data.message;
         }
 
         window.onload = loadHistoryFromLocalStorage;
