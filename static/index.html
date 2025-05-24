@@ -160,6 +160,8 @@
         const chatHistory = document.getElementById("chatHistory");
         const chatControls = document.getElementById("chatControls");
         let chatData = [];
+        let isLearning = false;
+        let lastUnknownPhrase = "";
 
         function showModal(id) {
             document.getElementById(id).style.display = 'block';
@@ -201,8 +203,26 @@
         }
 
         async function askBot() {
-            const message = document.getElementById("messageInput").value;
-            if (!message.trim()) return;
+            const input = document.getElementById("messageInput");
+            const message = input.value.trim();
+            if (!message) return;
+
+            if (isLearning) {
+                const teachRes = await fetch("/teach", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ phrase: lastUnknownPhrase, answer: message })
+                });
+                const data = await teachRes.json();
+                chatData.push({ role: "user", text: message });
+                chatData.push({ role: "bot", text: "Thanks! I've learned how to answer that." });
+                isLearning = false;
+                lastUnknownPhrase = "";
+                renderChat();
+                saveHistoryToLocalStorage();
+                input.value = "";
+                return;
+            }
 
             const res = await fetch("/chat", {
                 method: "POST",
@@ -213,9 +233,15 @@
 
             chatData.push({ role: "user", text: message });
             chatData.push({ role: "bot", text: data.response });
+
+            if (data.response.includes("Please teach me")) {
+                isLearning = true;
+                lastUnknownPhrase = message;
+            }
+
             renderChat();
             saveHistoryToLocalStorage();
-            document.getElementById("messageInput").value = "";
+            input.value = "";
         }
 
         function clearHistory() {
