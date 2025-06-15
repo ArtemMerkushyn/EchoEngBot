@@ -142,6 +142,7 @@
 
         <div class="teach-section">
             <button onclick="showModal('teachModal')">Teach the bot</button>
+            <button onclick="showModal('editModal')">Edit answer</button>
             <button onclick="showModal('deleteModal')">Delete phrase/answer</button>
         </div>
     </div>
@@ -154,6 +155,17 @@
             <input type="text" id="teachAnswer" placeholder="Answer">
             <button onclick="teachBot()">Save</button>
             <div id="teachResponse" class="response"></div>
+        </div>
+    </div>
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('editModal')">&times;</span>
+            <h2>Edit bot's answer</h2>
+            <input type="text" id="editPhrase" placeholder="Phrase">
+            <input type="text" id="editOldAnswer" placeholder="Old answer">
+            <input type="text" id="editNewAnswer" placeholder="New answer">
+            <button onclick="editBotAnswer()">Edit</button>
+            <div id="editResponse" class="response"></div>
         </div>
     </div>
     <div id="deleteModal" class="modal">
@@ -273,6 +285,23 @@
             });
             const data = await res.json();
             document.getElementById("teachResponse").innerText = data.message;
+        }
+
+        async function editBotAnswer() {
+            const phrase = document.getElementById("editPhrase").value.trim();
+            const oldAnswer = document.getElementById("editOldAnswer").value.trim();
+            const newAnswer = document.getElementById("editNewAnswer").value.trim();
+
+            if (!phrase || !oldAnswer || !newAnswer) return;
+
+            const res = await fetch("/edit", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ phrase, old_answer: oldAnswer, new_answer: newAnswer })
+            });
+
+            const data = await res.json();
+            document.getElementById("editResponse").innerText = data.message;
         }
 
         async function deleteFromBot() {
