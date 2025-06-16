@@ -57,6 +57,37 @@ def teach():
     save_database(db)
     return jsonify({"status": "success", "message": f"Phrase '{phrase}' successfully trained."})
 
+# редактирование ответа
+@app.route("/edit", methods=["POST"])
+def edit_answer():
+    data = request.get_json()
+    phrase = data.get("phrase", "").strip().lower()
+    old_answer = (data.get("old_answer") or "").strip()
+    new_answer = (data.get("new_answer") or "").strip()
+
+    if not phrase or not old_answer or not new_answer:
+        return jsonify({"message": "Missing required fields."})
+    
+    # загружаем базу
+    try:
+        with open(DB_FILE, "r", encoding="utf-8") as f:
+            db = json.load(f)
+    except FileNotFoundError:
+        return jsonify({"message": "Knowledge base is empty."})
+    
+    if phrase not in db or old_answer not in db[phrase]:
+        return jsonify({"message": "Phrase or old answer not found."})
+    
+    # обновляем ответ
+    db[phrase].remove(old_answer)
+    db[phrase].append(new_answer)
+
+    # сохраняем ответ
+    with open(DB_FILE, "w", encoding="utf-8") as f:
+        json.dump(db, f, ensure_ascii=False, indent=2)
+    
+    return jsonify({"message": "Answer updated successfully."})
+
 # удаление фразы или конкретного ответа к этой фразе
 @app.route("/delete", methods=["POST"])
 def delete_from_bot():
