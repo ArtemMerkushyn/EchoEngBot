@@ -5,6 +5,7 @@ import os
 
 app = Flask(__name__)
 DB_FILE = "database.json"
+Syn_FILE = "synonymsdb.json"
 
 # Загрузка базы данных
 def load_database():
@@ -13,6 +14,21 @@ def load_database():
             json.dump({}, f)
     with open(DB_FILE, 'r') as f:
         return json.load(f)
+    
+# Загрузка синонимов
+def load_synonyms():
+    try:
+        with open(Syn_FILE, "r") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return {}
+
+# Проверяет, является ли введённая фраза синонимом
+def resolve_synonym(phrase, synonyms):
+    for main_phrase, syn_list in synonyms.items():
+        if phrase == main_phrase or phrase in syn_list:
+            return main_phrase
+    return phrase
 
 # Сохранение базы данных
 def save_database(data):
@@ -24,14 +40,18 @@ def save_database(data):
 def index():
     return send_from_directory("static", "index.html")
 
-# Получение ответа от бота
+# Обрабатывает входящее сообщение от пользователя
+# Ищет фразу или её синоним в базе и возвращает ответ
 @app.route("/chat", methods=["POST"])
 def chat():
     user_input = request.json.get("message", "").strip().lower()
-    db = load_database()
 
-    if user_input in db:
-        answer = random.choice(db[user_input])
+    db = load_database()
+    synonyms = load_synonyms()
+    main_phrase = resolve_synonym(user_input, synonyms)
+
+    if main_phrase in db:
+        answer = random.choice(db[main_phrase])
         return jsonify({"response": answer})
     else:
         return jsonify({"response": "I don't know how to answer this. Please teach me!"})
