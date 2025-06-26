@@ -144,6 +144,7 @@
             <button onclick="showModal('teachModal')">Teach the bot</button>
             <button onclick="showModal('editModal')">Edit answer</button>
             <button onclick="showModal('deleteModal')">Delete phrase/answer</button>
+            <button onclick="showModal('synonymModal')">Add synonym</button>
         </div>
     </div>
 
@@ -178,6 +179,17 @@
             <div id="deleteResponse" class="response"></div>
         </div>
     </div>
+    <div id="synonymModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('synonymModal')">&times;</span>
+            <h2>Add Synonym</h2>
+            <input type="text" id="mainPhrase" placeholder="Main phrase">
+            <input type="text" id="newSynonym" placeholder="Synonym">
+            <button onclick="addSynonym()">Add</button>
+            <div id="synonymResponse" class="response"></div>
+        </div>
+    </div>
+
 
     <script>
         const chatHistory = document.getElementById("chatHistory");
@@ -318,6 +330,22 @@
 
             const data = await res.json();
             document.getElementById("deleteResponse").innerText = data.message;
+        }
+
+        async function addSynonym() {
+            const main = document.getElementById("mainPhrase").value.trim();
+            const synonym = document.getElementById("newSynonym").value.trim();
+
+            if (!main || !synonym) return;
+
+            const res = await fetch("/add-synonym", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ main, synonym }) 
+            });
+
+            const data = await res.json();
+            document.getElementById("synonymResponse").innerText = data.message;
         }
 
         window.onload = loadHistoryFromLocalStorage;

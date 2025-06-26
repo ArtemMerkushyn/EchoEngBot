@@ -1,5 +1,20 @@
 {
-  "hello": ["hi", "hey", "yo", "howdy"],
-  "how are you": ["how do you do", "how's it going", "what's up"],
-  "bye": ["goodbye", "see you", "later"]
+  "hello": [
+    "hi",
+    "hey",
+    "yo",
+    "howdy",
+    "good morning"
+  ],
+  "how are you": [
+    "how do you do",
+    "how's it going",
+    "what's up"
+  ],
+  "bye": [
+    "goodbye",
+    "see you",
+    "later",
+    "see you latter"
+  ]
 }

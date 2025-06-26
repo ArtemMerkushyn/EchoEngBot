@@ -145,7 +145,7 @@ def delete_from_bot():
     return jsonify({"message": message})
 
 # Добавляет новый синоним к основной фразе
-@app.route("/add-synonym", method=["POST"])
+@app.route("/add-synonym", methods=["POST"])
 def add_synonym():
     data = request.get_json()
     main = data.get("main", "").strip().lower()
@@ -155,7 +155,7 @@ def add_synonym():
         return jsonify({"message": "Main phrase and synonym are required."}), 400
 
     try:
-        with open(Syn_FILE, "r", encoding="utf-8") as f:
+        with open("synonymsdb.json", "r", encoding="utf-8") as f:
             synonyms = json.load(f)
     except FileNotFoundError:
         synonyms = {}
@@ -165,11 +165,12 @@ def add_synonym():
 
     if synonym not in synonyms[main]:
         synonyms[main].append(synonym)
-    
-    with open(Syn_FILE, "w", encoding="utf-8") as f:
+
+    with open("synonymsdb.json", "w", encoding="utf-8") as f:
         json.dump(synonyms, f, ensure_ascii=False, indent=2)
-    
+
     return jsonify({"message": f"Synonym '{synonym}' added for '{main}'"})
+
 
 if __name__ == "__main__":
     app.run(debug=True)
