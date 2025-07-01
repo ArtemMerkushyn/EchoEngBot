@@ -171,6 +171,35 @@ def add_synonym():
 
     return jsonify({"message": f"Synonym '{synonym}' added for '{main}'"})
 
+# Редактирует синоним: заменяет старый синоним на новый для указанной фразы
+@app.route("/edit-synonym", methods=["POST"])
+def edit_synonym():
+    data = request.get_json()
+    main = data.get("main", "").strip().lower()
+    old_syn = data.get("old_syn", "").strip().lower()
+    new_syn = data.get("new_syn", "").strip().lower()
+    
+    if not main or not old_syn or new_syn:
+        return jsonify({"message": "Main phrase, old synonym, and new synonym are required."}), 400
+    
+    try:
+        with open(Syn_FILE, "r", encoding="utf-8") as f:
+            synonyms = json.load(f)
+    except FileNotFoundError:
+        return jsonify({"message": "Synonym database not found."}), 500
+    
+    if main not in synonyms or old_syn not in synonyms[main]:
+        return jsonify({"message": "Main phrase or old synonym not found."}), 404
+    
+    synonyms[main].remove(old_syn)
+    if new_syn not in synonyms[main]:
+        synonyms[main].append(new_syn)
+    
+    with open(Syn_FILE, "w", encoding="utf-8") as f:
+        json.dump(synonyms, f, ensure_ascii=False, indent=2)
+    
+    return jsonify({"message": f"Synonym '{old_syn}' updated to '{new_syn}' for '{main}'"})
+
 
 if __name__ == "__main__":
     app.run(debug=True)
