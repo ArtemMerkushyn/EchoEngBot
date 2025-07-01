@@ -148,6 +148,7 @@
             <button onclick="showModal('editModal')">Edit answer</button>
             <button onclick="showModal('deleteModal')">Delete phrase/answer</button>
             <button onclick="showModal('synonymModal')">Add synonym</button>
+            <button onclick="showModal('editSynonymModal')">Edit synonym</button>
         </div>
     </div>
 
@@ -192,6 +193,18 @@
             <div id="synonymResponse" class="response"></div>
         </div>
     </div>
+    <div id="editSynonymModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('editSynonymModal')">&times;</span>
+            <h2>Edit Synonym</h2>
+            <input type="text" id="editSynMain" placeholder="Main phrase">
+            <input type="text" id="editSynOld" placeholder="Old synonym">
+            <input type="text" id="editSynNew" placeholder="New synonym">
+            <button onclick="editSynonym()">Save</button>
+            <div id="editSynResponse" class="response"></div>
+        </div>
+    </div>
+
 
 
     <script>
@@ -349,6 +362,39 @@
 
             const data = await res.json();
             document.getElementById("synonymResponse").innerText = data.message;
+        }
+
+        // async function editSynonym() {
+        //     const main = document.getElementById("editSynMain").value.trim();
+        //     const old_syn = document.getElementById("editSynOld").value.trim();
+        //     const new_syn = document.getElementById("editSynNew").value.trim();
+
+        //     if (!main || !old_syn || !new_syn) return;
+
+        //     const res = await fetch("/edit-synonym", {
+        //         method: "POST",
+        //         headers: { "Content-Type": "application/json" },
+        //         body: JSON.stringify({ main, old_syn, new_syn })
+        //     })
+
+        //     const data = await res.json();
+        //     document.getElementById("editSynResponse").innerText = data.message;
+        // }
+        async function editSynonym() {
+            const main = document.getElementById("editSynMain").value.trim();
+            const old_syn = document.getElementById("editSynOld").value.trim();
+            const new_syn = document.getElementById("editSynNew").value.trim();
+
+            if (!main || !old_syn || !new_syn) return;
+
+            const res = await fetch("/edit-synonym", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ main, old_syn, new_syn })
+            });
+
+            const data = await res.json();
+            document.getElementById("editSynResponse").innerText = data.message;
         }
 
         window.onload = loadHistoryFromLocalStorage;

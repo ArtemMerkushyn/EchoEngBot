@@ -179,7 +179,7 @@ def edit_synonym():
     old_syn = data.get("old_syn", "").strip().lower()
     new_syn = data.get("new_syn", "").strip().lower()
     
-    if not main or not old_syn or new_syn:
+    if not main or not old_syn or not new_syn:
         return jsonify({"message": "Main phrase, old synonym, and new synonym are required."}), 400
     
     try:
