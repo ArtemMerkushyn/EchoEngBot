@@ -143,6 +143,16 @@ def delete_from_bot():
         json.dump(db, f, ensure_ascii=False, indent=2)
 
     return jsonify({"message": message})
+# Возвращает все фразы и ответы, известные боту
+@app.route("/all-phrases", methods=["GET"])
+def get_all_phrases():
+    try:
+        with open(DB_FILE, "r", encoding="utf-8") as f:
+            db = json.load(f)
+    except FileNotFoundError:
+        return jsonify({"data": {}, "message": "Database is empty."})
+    
+    return jsonify({"data": db})
 
 # Добавляет новый синоним к основной фразе
 @app.route("/add-synonym", methods=["POST"])
