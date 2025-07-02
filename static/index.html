@@ -144,6 +144,7 @@
         </div>
 
         <div class="teach-section">
+            <button onclick="showAllPhrases()">Show all phrases</button>
             <button onclick="showModal('teachModal')">Teach the bot</button>
             <button onclick="showModal('editModal')">Edit answer</button>
             <button onclick="showModal('deleteModal')">Delete phrase/answer</button>
@@ -153,6 +154,13 @@
         </div>
     </div>
 
+    <div id="allPhrasesModal" class="modal">
+        <div class="modal-content" style="max-height: 400px; overflow-y: auto;">
+            <span class="close" onclick="closeModal('allPhrasesModal')">&times;</span>
+            <h2>All Phrases and Answers</h2>
+            <div id="phrasesList" style="text-align: left; font-size: 14px;"></div>
+        </div>
+    </div>
     <div id="teachModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal('teachModal')">&times;</span>
@@ -310,6 +318,26 @@
             chatHistory.style.display = "none";
             chatControls.style.display = "none";
             localStorage.removeItem("chatData");
+        }
+        
+        async function showAllPhrases() {
+            const res = await fetch("/all-phrases");
+            const data = await res.json();
+            const db = data.data;
+
+            const list = document.getElementById("phrasesList");
+            list.innerHTML = "";
+
+            if (Object.keys(db).length === 0) {
+                list.innerHTML = "<p><i>No phrases found.</i></p>";
+            } else {
+                for (let phrase in db) {
+                    const answers = db[phrase].map( a => `- ${a}`).join("<br>");
+                    list.innerHTML += `<div style="margin-bottom: 15px;"><b>${phrase}</b><br>${answers}</div>`
+                }
+            }
+
+            document.getElementById("allPhrasesModal").style.display = "block";
         }
 
         async function teachBot() {

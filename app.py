@@ -143,6 +143,7 @@ def delete_from_bot():
         json.dump(db, f, ensure_ascii=False, indent=2)
 
     return jsonify({"message": message})
+
 # Возвращает все фразы и ответы, известные боту
 @app.route("/all-phrases", methods=["GET"])
 def get_all_phrases():
