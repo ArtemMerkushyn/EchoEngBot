@@ -244,5 +244,16 @@ def delete_synonym():
     
     return jsonify({message: message})
 
+# Возвращает все синонимы в виде словаря
+@app.route("/all-synonyms", methods=["GET"])
+def get_all_synonyms():
+    try:
+        with open(Syn_FILE, "r", encoding="utf-8") as f:
+            syn = json.load(f)
+    except FileNotFoundError:
+        return jsonify({"data": {}, "message": "Synonym database is empty."})
+    
+    return jsonify({"data": syn})
+
 if __name__ == "__main__":
     app.run(debug=True)
