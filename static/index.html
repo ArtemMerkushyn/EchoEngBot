@@ -148,6 +148,7 @@
             <button onclick="showModal('teachModal')">Teach the bot</button>
             <button onclick="showModal('editModal')">Edit answer</button>
             <button onclick="showModal('deleteModal')">Delete phrase/answer</button>
+            <button onclick="showAllSynonyms()">Show all synonyms</button>
             <button onclick="showModal('synonymModal')">Add synonym</button>
             <button onclick="showModal('editSynonymModal')">Edit synonym</button>
             <button onclick="showModal('deleteSynonymModal')">Delete synonym</button>
@@ -190,6 +191,13 @@
             <input type="text" id="deleteAnswer" placeholder="(Optional) Specific answer to delete">
             <button onclick="deleteFromBot()">Delete</button>
             <div id="deleteResponse" class="response"></div>
+        </div>
+    </div>
+    <div id="allSynonymsModal" class="modal">
+        <div class="modal-content" style="max-height: 400px; overflow-y: auto;">
+            <span class="close" onclick="closeModal('allSynonymsModal')">&times;</span>
+            <h2>All Synonyms</h2>
+            <div id="synonymsList" style="text-align: left; font-size: 14px;"></div>
         </div>
     </div>
     <div id="synonymModal" class="modal">
@@ -383,6 +391,25 @@
 
             const data = await res.json();
             document.getElementById("deleteResponse").innerText = data.message;
+        }
+
+        async function showAllSynonyms() {
+            const res = await fetch("/all-synonyms");
+            const data = await res.json();
+            const syn = data.data;
+            const list = document.getElementById("synonymsList");
+            list.innerHTML = "";
+
+            if (Object.keys(syn).length === 0) {
+                list.innerHTML = "<p><i>No synonyms found.</i></p>";
+            } else {
+                for (let main in syn) {
+                    const items = syn[main].map(s => `– ${s}`).join("<br>");
+                    list.innerHTML += `<div style="margin-bottom: 15px;"><b>${main}</b><br>${items}</div>`;
+                }
+            }
+
+            document.getElementById("allSynonymsModal").style.display = "block";
         }
 
         async function addSynonym() {
