@@ -149,6 +149,7 @@
             <button onclick="showModal('deleteModal')">Delete phrase/answer</button>
             <button onclick="showModal('synonymModal')">Add synonym</button>
             <button onclick="showModal('editSynonymModal')">Edit synonym</button>
+            <button onclick="showModal('deleteSynonymModal')">Delete synonym</button>
         </div>
     </div>
 
@@ -204,8 +205,16 @@
             <div id="editSynResponse" class="response"></div>
         </div>
     </div>
-
-
+    <div id="deleteSynonymModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('deleteSynonymModal')">&times;</span>
+            <h2>Delete Synonym</h2>
+            <input type="text" id="deleteSynMain" placeholder="Main phrase">
+            <input type="text" id="deleteSynOne" placeholder="(Optional) Synonym to delete">
+            <button onclick="deleteSynonym()">Delete</button>
+            <div id="deleteSynResponse" class="response"></div>
+        </div>
+    </div>
 
     <script>
         const chatHistory = document.getElementById("chatHistory");
@@ -364,22 +373,6 @@
             document.getElementById("synonymResponse").innerText = data.message;
         }
 
-        // async function editSynonym() {
-        //     const main = document.getElementById("editSynMain").value.trim();
-        //     const old_syn = document.getElementById("editSynOld").value.trim();
-        //     const new_syn = document.getElementById("editSynNew").value.trim();
-
-        //     if (!main || !old_syn || !new_syn) return;
-
-        //     const res = await fetch("/edit-synonym", {
-        //         method: "POST",
-        //         headers: { "Content-Type": "application/json" },
-        //         body: JSON.stringify({ main, old_syn, new_syn })
-        //     })
-
-        //     const data = await res.json();
-        //     document.getElementById("editSynResponse").innerText = data.message;
-        // }
         async function editSynonym() {
             const main = document.getElementById("editSynMain").value.trim();
             const old_syn = document.getElementById("editSynOld").value.trim();
@@ -395,6 +388,25 @@
 
             const data = await res.json();
             document.getElementById("editSynResponse").innerText = data.message;
+        }
+
+        async function deleteSynonym() {
+            const main = document.getElementById("deleteSynMain").value.trim();
+            const synonym = document.getElementById("deleteSynOne").value.trim();
+
+            if (!main) {
+                document.getElementById("deleteSynResponse").innerText = "Please enter the main phrase.";
+                return;
+            }
+
+            const res = await fetch("/delete-synonym", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ main, synonym })
+            })
+
+            const data = await res.json();
+            document.getElementById("deleteSynResponce").innerText = data.message;
         }
 
         window.onload = loadHistoryFromLocalStorage;

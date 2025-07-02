@@ -208,7 +208,7 @@ def delete_synonym():
     synonym = data.get("synonym", "").strip().lower()
 
     try:
-        with open(Syn_FILE, "r", encoding="utd-8") as f:
+        with open("synonymsdb.json", "r", encoding="utf-8") as f:
             synonyms = json.load(f)
     except FileNotFoundError:
         return jsonify({"message": "Synonym database not found."}), 500
