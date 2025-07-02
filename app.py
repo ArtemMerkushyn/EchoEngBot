@@ -200,6 +200,38 @@ def edit_synonym():
     
     return jsonify({"message": f"Synonym '{old_syn}' updated to '{new_syn}' for '{main}'"})
 
+# Удаляет один синоним или все синонимы для указанной основной фразы
+@app.route("/delete-synonym", methods=["POST"])
+def delete_synonym():
+    data = request.get_json()
+    main = data.get("main", "").strip().lower()
+    synonym = data.get("synonym", "").strip().lower()
+
+    try:
+        with open(Syn_FILE, "r", encoding="utd-8") as f:
+            synonyms = json.load(f)
+    except FileNotFoundError:
+        return jsonify({"message": "Synonym database not found."}), 500
+    
+    if main not in synonyms:
+        return jsonify({"message": "Main phrase not found."}), 404
+    
+    if synonym:
+        if synonym in synonyms[main]:
+            synonyms[main].remove(synonym)
+            if not synonyms[main]: # если список стал пустым — удалим ключ
+                del synonyms[main]
+            message = f"Synonym '{synonym}' removed from '{main}'."
+        else:
+            return jsonify({"message": "Synonym not found for that phrase."}), 404
+    else:
+        del synonyms[main]
+        message = f"All synonyms removed for '{main}'."
+
+    with open(Syn_FILE, "w", encoding="utf-8") as f:
+        json.dump(synonyms, f, ensure_ascii=False, indent=2)
+    
+    return jsonify({message: message})
 
 if __name__ == "__main__":
     app.run(debug=True)
