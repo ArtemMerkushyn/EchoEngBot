@@ -68,11 +68,23 @@ def teach():
 
     db = load_database()
 
-    if phrase not in db:
+    try:
+        with open(Syn_FILE, "r", encoding="utf-8") as f:
+            synonyms = json.load(f)
+    except FileNotFoundError:
+        synonyms = {}
+
+    main_phrase = phrase
+    for main, syn_list in synonyms.items():
+        if phrase in syn_list:
+            main_phrase = main
+            break
+
+    if main_phrase not in db:
         db[phrase] = [answer]
     else:
-        if answer not in db[phrase]:
-            db[phrase].append(answer)
+        if answer not in db[main_phrase]:
+            db[main_phrase].append(answer)
 
     save_database(db)
     return jsonify({"status": "success", "message": f"Phrase '{phrase}' successfully trained."})
