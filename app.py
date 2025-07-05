@@ -89,7 +89,7 @@ def teach():
     save_database(db)
     return jsonify({"status": "success", "message": f"Phrase '{phrase}' successfully trained."})
 
-# редактирование ответа
+# Редактирование ответа (с распознаванием синонимов)
 @app.route("/edit", methods=["POST"])
 def edit_answer():
     data = request.get_json()
@@ -99,26 +99,46 @@ def edit_answer():
 
     if not phrase or not old_answer or not new_answer:
         return jsonify({"message": "Missing required fields."})
-    
-    # загружаем базу
+
+    # Загружаем базу знаний
     try:
         with open(DB_FILE, "r", encoding="utf-8") as f:
             db = json.load(f)
     except FileNotFoundError:
         return jsonify({"message": "Knowledge base is empty."})
-    
-    if phrase not in db or old_answer not in db[phrase]:
-        return jsonify({"message": "Phrase or old answer not found."})
-    
-    # обновляем ответ
-    db[phrase].remove(old_answer)
-    db[phrase].append(new_answer)
 
-    # сохраняем ответ
+    # Загружаем синонимы
+    try:
+        with open("synonymsdb.json", "r", encoding="utf-8") as f:
+            synonyms = json.load(f)
+    except FileNotFoundError:
+        synonyms = {}
+
+    # Функция для определения основной фразы (если введён синоним)
+    def resolve_synonym(phrase, synonyms):
+        for main, syns in synonyms.items():
+            if phrase == main or phrase in syns:
+                return main
+        return phrase  # если синоним не найден — вернуть как есть
+
+    # Определяем основную фразу
+    main_phrase = resolve_synonym(phrase, synonyms)
+
+    # Проверяем наличие нужного ответа
+    if main_phrase not in db or old_answer not in db[main_phrase]:
+        return jsonify({"message": "Phrase or old answer not found."})
+
+    # Обновляем ответ
+    db[main_phrase].remove(old_answer)
+    if new_answer not in db[main_phrase]:
+        db[main_phrase].append(new_answer)
+
+    # Сохраняем изменения
     with open(DB_FILE, "w", encoding="utf-8") as f:
         json.dump(db, f, ensure_ascii=False, indent=2)
-    
+
     return jsonify({"message": "Answer updated successfully."})
+
 
 # удаление фразы или конкретного ответа к этой фразе
 @app.route("/delete", methods=["POST"])
