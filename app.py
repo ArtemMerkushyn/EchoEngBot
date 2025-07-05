@@ -147,27 +147,47 @@ def delete_from_bot():
     phrase = data.get("phrase", "").strip().lower()
     answer = (data.get("answer") or "").strip()
 
+    # Загружаем базу знаний
     try:
         with open(DB_FILE, "r", encoding="utf-8") as f:
             db = json.load(f)
     except FileNotFoundError:
         db = {}
+    
+    # Загружаем синонимы
+    try:
+        with open(Syn_FILE, "r", encoding="utf-8") as f:
+            synonyms = json.load(f)
+    except FileNotFoundError:
+        synonyms = {}
+    
+    # Поиск основной фразы по синониму
+    def resolve_synonym(phrase, synonyms):
+        for main, syns in synonyms.items():
+            if phrase == main or phrase in syns:
+                return main
+        return phrase
+    
+    main_phrase = resolve_synonym(phrase, synonyms)
 
-    if phrase not in db:
-        return jsonify({"message": "Phrase not found."})
+    if main_phrase not in db:
+        return jsonify({"message": f"Phrase '{main_phrase}' not found in database."})
 
     if answer:
         # Удаляем конкретный ответ
-        if answer in db[phrase]:
-            db[phrase].remove(answer)
-            if not db[phrase]:
-                del db[phrase]  # Если больше нет ответов, удаляем всю фразу
+        if answer in db[main_phrase]:
+            db[main_phrase].remove(answer)
+            if not db[main_phrase]:
+                del db[main_phrase]  # Если больше нет ответов, удаляем всю фразу
             message = "Answer deleted."
         else:
-            return jsonify({"message": "Answer not found."})
+            return jsonify({
+                "message": f"Answer not found for phrase '{main_phrase}'.",
+                "available_answers": db[main_phrase]
+            })
     else:
         # Удаляем всю фразу
-        del db[phrase]
+        del db[main_phrase]
         message = "Phrase and all answers deleted."
 
     # Сохраняем изменения
