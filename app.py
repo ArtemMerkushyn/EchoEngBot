@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, send_from_directory
 import json
 import random
 import os
+import difflib
 
 app = Flask(__name__)
 DB_FILE = "database.json"
@@ -42,6 +43,7 @@ def index():
 
 # Обрабатывает входящее сообщение от пользователя
 # Ищет фразу или её синоним в базе и возвращает ответ
+# Если фразы нет — пробуем найти похожую
 @app.route("/chat", methods=["POST"])
 def chat():
     user_input = request.json.get("message", "").strip().lower()
@@ -53,8 +55,16 @@ def chat():
     if main_phrase in db:
         answer = random.choice(db[main_phrase])
         return jsonify({"response": answer})
-    else:
-        return jsonify({"response": "I don't know how to answer this. Please teach me!"})
+
+    all_phrases = list(db.keys()) + [s for sub in synonyms.values() for s in sub]
+    matches = difflib.get_close_matches(user_input, all_phrases, n=1, cutoff=0.8)
+
+    if matches:
+        suggestion = matches[0]
+        return jsonify({"response": f"Maybe you meant: {suggestion}?"})
+
+    return jsonify({"response": "I don't know how to answer this. Please teach me!"})
+
 
 # Обучение бота новой фразе и ответу
 @app.route("/teach", methods=["POST"])

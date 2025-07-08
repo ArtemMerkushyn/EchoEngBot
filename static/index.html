@@ -310,7 +310,7 @@
             chatData.push({ role: "user", text: message });
             chatData.push({ role: "bot", text: data.response });
 
-            if (data.response.includes("Please teach me")) {
+            if (data.response && data.response.includes("Please teach me")) {
                 isLearning = true;
                 lastUnknownPhrase = message;
             }
