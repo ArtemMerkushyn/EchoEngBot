@@ -144,22 +144,22 @@
         </div>
 
         <div class="teach-section">
-            <button onclick="showAllPhrases()">Show all phrases</button>
+            <button onclick="openKnowledgeModal()">Show Knowledge Base</button>
             <button onclick="showModal('teachModal')">Teach the bot</button>
             <button onclick="showModal('editModal')">Edit answer</button>
             <button onclick="showModal('deleteModal')">Delete phrase/answer</button>
-            <button onclick="showAllSynonyms()">Show all synonyms</button>
             <button onclick="showModal('synonymModal')">Add synonym</button>
             <button onclick="showModal('editSynonymModal')">Edit synonym</button>
             <button onclick="showModal('deleteSynonymModal')">Delete synonym</button>
         </div>
     </div>
 
-    <div id="allPhrasesModal" class="modal">
-        <div class="modal-content" style="max-height: 400px; overflow-y: auto;">
-            <span class="close" onclick="closeModal('allPhrasesModal')">&times;</span>
-            <h2>All Phrases and Answers</h2>
-            <div id="phrasesList" style="text-align: left; font-size: 14px;"></div>
+    <div id="knowledgeModal" class="modal">
+        <div class="modal-content" style="max-height: 90vh; overflow-y: auto;">
+            <span class="close" onclick="closeModal('knowledgeModal')">&times;</span>
+            <h2>Knowledge Base</h2>
+            <input type="text" id="knowledgeSearch" placeholder="Search..." style="width: 100%; padding: 8px; margin-bottom: 15px;">
+            <div id="knowledgeList" style="text-align: left; font-size: 14px;"></div>
         </div>
     </div>
     <div id="teachModal" class="modal">
@@ -191,13 +191,6 @@
             <input type="text" id="deleteAnswer" placeholder="(Optional) Specific answer to delete">
             <button onclick="deleteFromBot()">Delete</button>
             <div id="deleteResponse" class="response"></div>
-        </div>
-    </div>
-    <div id="allSynonymsModal" class="modal">
-        <div class="modal-content" style="max-height: 400px; overflow-y: auto;">
-            <span class="close" onclick="closeModal('allSynonymsModal')">&times;</span>
-            <h2>All Synonyms</h2>
-            <div id="synonymsList" style="text-align: left; font-size: 14px;"></div>
         </div>
     </div>
     <div id="synonymModal" class="modal">
@@ -278,6 +271,63 @@
             }
         }
 
+        async function openKnowledgeModal() {
+            const [phrasesRes, synonymsRes] = await Promise.all([
+                fetch("/all-phrases"),
+                fetch("/all-synonyms")
+            ]);
+
+            const phrasesData = await phrasesRes.json();
+            const synonymsData = await synonymsRes.json();
+
+            const db = phrasesData.data;
+            const syn = synonymsData.data;
+
+            const allData = Object.keys(db).map(phrase => ({
+                phrase,
+                answers: db[phrase],
+                synonyms: syn[phrase] || []
+            }));
+
+            const searchInput = document.getElementById("knowledgeSearch");
+            const list = document.getElementById("knowledgeList");
+
+            function renderList(filtered) {
+                list.innerHTML = "";
+
+                if (filtered.length === 0) {
+                    list.innerHTML = "<p><i>No matches found.</i></p>";
+                    return;
+                }
+
+                filtered.forEach(item => {
+                    const answerList = item.answers.map(ans => `– ${ans}`).join("<br>");
+                    const synonymList = item.synonyms.length ? item.synonyms.map(s => `~ ${s}`).join("<br>") : "<i>no synonyms</i>";
+                    list.innerHTML += `
+                        <div style="margin-bottom: 20px;">
+                            <b>${item.phrase}</b><br>
+                            <u>Answers:</u><br>${answerList}<br>
+                            <u>Synonyms:</u><br>${synonymList}
+                        </div>
+                    `;
+                });
+            }
+
+            renderList(allData);
+
+            searchInput.oninput = () => {
+                const query = searchInput.value.trim().toLowerCase();
+                const filtered = allData.filter(item =>
+                    item.phrase.includes(query) ||
+                    item.answers.some(ans => ans.toLowerCase().includes(query)) ||
+                    item.synonyms.some(s => s.toLowerCase().includes(query))
+                );
+                renderList(filtered);
+            };
+
+            document.getElementById("knowledgeModal").style.display = "block";
+        }
+
         async function askBot() {
             const input = document.getElementById("messageInput");
             const message = input.value.trim();
@@ -327,26 +377,6 @@
             chatControls.style.display = "none";
             localStorage.removeItem("chatData");
         }
-        
-        async function showAllPhrases() {
-            const res = await fetch("/all-phrases");
-            const data = await res.json();
-            const db = data.data;
-
-            const list = document.getElementById("phrasesList");
-            list.innerHTML = "";
-
-            if (Object.keys(db).length === 0) {
-                list.innerHTML = "<p><i>No phrases found.</i></p>";
-            } else {
-                for (let phrase in db) {
-                    const answers = db[phrase].map( a => `- ${a}`).join("<br>");
-                    list.innerHTML += `<div style="margin-bottom: 15px;"><b>${phrase}</b><br>${answers}</div>`
-                }
-            }
-
-            document.getElementById("allPhrasesModal").style.display = "block";
-        }
 
         async function teachBot() {
             const phrase = document.getElementById("teachPhrase").value;
@@ -391,25 +421,6 @@
 
             const data = await res.json();
             document.getElementById("deleteResponse").innerText = data.message;
-        }
-
-        async function showAllSynonyms() {
-            const res = await fetch("/all-synonyms");
-            const data = await res.json();
-            const syn = data.data;
-            const list = document.getElementById("synonymsList");
-            list.innerHTML = "";
-
-            if (Object.keys(syn).length === 0) {
-                list.innerHTML = "<p><i>No synonyms found.</i></p>";
-            } else {
-                for (let main in syn) {
-                    const items = syn[main].map(s => `– ${s}`).join("<br>");
-                    list.innerHTML += `<div style="margin-bottom: 15px;"><b>${main}</b><br>${items}</div>`;
-                }
-            }
-
-            document.getElementById("allSynonymsModal").style.display = "block";
         }
 
         async function addSynonym() {
