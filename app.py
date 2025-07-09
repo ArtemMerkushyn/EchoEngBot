@@ -56,8 +56,14 @@ def chat():
         answer = random.choice(db[main_phrase])
         return jsonify({"response": answer})
 
-    all_phrases = list(db.keys()) + [s for sub in synonyms.values() for s in sub]
-    matches = difflib.get_close_matches(user_input, all_phrases, n=1, cutoff=0.8)
+     # Все фразы и синонимы
+    all_phrases = list(set(db.keys() | {syn for syns in synonyms.values() for syn in syns}))
+
+    # Устанавливаем чувствительность в зависимости от длины
+    length = len(user_input)
+    cutoff = 0.9 if length <= 4 else 0.8 if length <= 10 else 0.75
+
+    matches = difflib.get_close_matches(user_input, all_phrases, n=1, cutoff=cutoff)
 
     if matches:
         suggestion = matches[0]
