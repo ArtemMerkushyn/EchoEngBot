@@ -5,6 +5,8 @@ body {
     padding: 0;
     display: flex;
     justify-content: center;
+    align-items: center;
+    min-height: 100vh;
 }
 
 .container {
@@ -24,8 +26,16 @@ h1 {
 .input-group {
     display: flex;
     justify-content: space-between;
-    gap: 10px;
     margin-bottom: 10px;
+}
+
+#messageInput {
+    border-radius: 5px 0 0 5px;
+    outline: none;
+}
+
+.ask-btn {
+    border-radius: 0px 5px 5px 0;
 }
 
 input[type="text"] {
@@ -44,6 +54,11 @@ button {
     background-color: #007BFF;
     color: white;
     cursor: pointer;
+    transition: all .1s linear;
+}
+
+button:hover {
+    opacity: 0.8;
 }
 
 .response {
@@ -91,8 +106,6 @@ button {
 .chat-history {
     text-align-last: left;
     margin-top: 20px;
-    /* max-height: 200px; */
-    /* overflow-y: auto; */
     border: 1px solid #ddd;
     padding: 10px;
     background-repeat: 5px;
