@@ -210,8 +210,11 @@
                 );
                 renderList(filtered);
             };
-
-            document.getElementById("knowledgeModal").style.display = "block";
+            
+            const modal = document.getElementById("knowledgeModal");
+            modal.classList.add("open");
+            modal.style.zIndex = "1";
+            modal.style.opacity = "1";
         }
 
         async function askBot() {
