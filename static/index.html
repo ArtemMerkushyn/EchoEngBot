@@ -109,11 +109,21 @@
         let lastUnknownPhrase = "";
 
         function showModal(id) {
-            document.getElementById(id).style.display = 'block';
+            const modal = document.getElementById(id);
+            modal.classList.add("open");
+            modal.style.zIndex = "1";
+            modal.style.opacity = "1";
+            
         }
 
         function closeModal(id) {
-            document.getElementById(id).style.display = 'none';
+            const modal = document.getElementById(id);    
+            modal.classList.remove("open");
+            modal.style.opacity = "0";
+            modal.style.zIndex = "-1";
+            setTimeout(() => {
+                
+            }, 500)
         }
 
         window.onclick = function(event) {
