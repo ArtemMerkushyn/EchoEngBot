@@ -34,7 +34,7 @@
         <div class="modal-content" style="max-height: 90vh; overflow-y: auto;">
             <span class="close" onclick="closeModal('knowledgeModal')">&times;</span>
             <h2>Knowledge Base</h2>
-            <input type="text" id="knowledgeSearch" placeholder="Search..." style="width: 100%; padding: 8px; margin-bottom: 15px;">
+            <input type="text" id="knowledgeSearch" placeholder="Search...">
             <div id="knowledgeList" style="text-align: left; font-size: 14px;"></div>
         </div>
     </div>
@@ -210,7 +210,7 @@
                 );
                 renderList(filtered);
             };
-            
+
             const modal = document.getElementById("knowledgeModal");
             modal.classList.add("open");
             modal.style.zIndex = "1";

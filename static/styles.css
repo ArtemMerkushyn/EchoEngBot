@@ -44,6 +44,7 @@ input[type="text"] {
     font-size: 16px;
     border: 1px solid #ccc;
     border-radius: 5px;
+    outline: none;
 }
 
 button {
@@ -94,9 +95,22 @@ button:hover {
     margin: 10% auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 90%;
+    width: 100%;
     max-width: 400px;
     border-radius: 10px;
+    text-align: center;
+    position: relative;
+}
+
+.modal-content h2 {
+    margin: 16px 0 10px 0;
+}
+
+.modal-content input {
+    width: calc(100% - 20px);
+    background: #f9f9f9;
+    margin-bottom: 10px;
+    border: none;
 }
 
 .close {
@@ -105,6 +119,9 @@ button:hover {
     font-size: 28px;
     font-weight: bold;
     cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 20px;
 }
 
 .chat-history {
