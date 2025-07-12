@@ -17,6 +17,68 @@ body {
     width: 90%;
     max-width: 500px;
     text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.teach-section {
+    border-radius: 5px 5px 0 0;
+    background: #ccc;
+    padding: 40px 30px 15px 30px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translateY(-100%);
+    transition: all .3s linear;
+}
+
+.teach-section.open {
+    transform: translateY(0%);
+}
+
+.chat-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.chat-controls__db {
+    display: flex;
+    gap: 2px;
+}
+
+#settingsDB {
+    overflow: hidden;
+    font-size: 30px;
+    height: 38.91px;
+    position: relative;
+    /* top: 5px; */
+}
+
+#settingsDB span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -55%);
+}
+
+.teach-section__close {
+    text-transform: uppercase;
+    position: absolute;
+    top: 15px;
+    right: 30px;
+    font-weight: 700;
+    color: #fff;
+    cursor: pointer;
+    transition: all .2s linear;
+}
+
+.teach-section__close:hover {
+    color: #888;
 }
 
 h1 {
@@ -66,13 +128,6 @@ button:hover {
     margin-top: 15px;
     font-weight: bold;
     color: #333;
-}
-
-.teach-section {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 30px;
 }
 
 .modal {
@@ -163,11 +218,4 @@ button:hover {
 .chat-entry.bot .chat-bubble {
     background-color: #e0e0e0;
     color: #000;
-}
-
-.chat-controls {
-    display: none;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 10px;
 }

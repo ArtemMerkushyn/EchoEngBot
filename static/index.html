@@ -10,7 +10,10 @@
         <h1>🤖 EchoEngBot</h1>
 
         <div id="chatControls" class="chat-controls">
-            <span></span>
+            <div class="chat-controls__db">
+                <button onclick="openKnowledgeModal()">Show Knowledge Base</button>
+                <button id="settingsDB" onclick="showSettingsDB()"><span>&#9881</span></button>
+            </div>
             <button onclick="clearHistory()">Clear history</button>
         </div>
         <div id="chatHistory" class="chat-history"></div>
@@ -20,7 +23,7 @@
         </div>
 
         <div class="teach-section">
-            <button onclick="openKnowledgeModal()">Show Knowledge Base</button>
+            <span class="teach-section__close" onclick="showSettingsDB()">close</span>
             <button onclick="showModal('teachModal')">Teach the bot</button>
             <button onclick="showModal('editModal')">Edit answer</button>
             <button onclick="showModal('deleteModal')">Delete phrase/answer</button>
@@ -122,6 +125,10 @@
             document.body.removeChild(scrollDiv);
 
             return scrollbarWidth;
+        }
+
+        function showSettingsDB() {
+            document.querySelector(".teach-section").classList.toggle("open");
         }
 
         function showModal(id) {
