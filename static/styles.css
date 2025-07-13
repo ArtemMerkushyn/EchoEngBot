@@ -24,7 +24,7 @@ body {
 .teach-section {
     border-radius: 5px 5px 0 0;
     background: #ccc;
-    padding: 40px 30px 15px 30px;
+    padding: 40px 30px 40px 30px;
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
@@ -43,7 +43,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 10px;
+    margin: 10px 0 ;
 }
 
 .chat-controls__db {
@@ -180,12 +180,11 @@ button:hover {
 }
 
 .chat-history {
-    text-align-last: left;
-    margin-top: 20px;
+    text-align-last: left;  
     border-radius: 5px 5px 0 0;
     border: 1px solid #ddd;
     padding: 10px;
-    background-repeat: 5px;
+    
     background: #f9f9f9;
     display: none;
 }
