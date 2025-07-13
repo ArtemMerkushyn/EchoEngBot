@@ -137,8 +137,9 @@
             modal.style.zIndex = "1";
             modal.style.opacity = "1";
             const scrollbarWidth = getScrollbarWidth();
+            const hasVerticalScroll = document.documentElement.scrollHeight > window.innerHeight;
             document.body.style.overflow = "hidden";
-            document.body.style.paddingRight = scrollbarWidth + "px";
+            document.body.style.paddingRight = hasVerticalScroll ? scrollbarWidth + "px" : "";
         }
 
         function closeModal(id) {
