@@ -160,26 +160,6 @@
             localStorage.setItem("chatData", JSON.stringify(chatData));
         }
 
-        // function renderChat() {
-        //     chatHistory.innerHTML = "";
-        //     chatData.forEach(entry => {
-        //         const div = document.createElement("div");
-        //         div.className = `chat-entry ${entry.role}`;
-        //         div.innerHTML = `<div class="chat-bubble">${entry.text}</div>`;
-        //         chatHistory.appendChild(div);
-        //     });
-        //     const hasChat = chatData.length > 0;
-        //     chatHistory.style.display = hasChat ? "block" : "none";
-        //     chatControls.style.display = hasChat ? "flex" : "none";
-        //     const clearBtn = document.getElementById("clearHistoryBtn");
-        //     if (clearBtn) {
-        //         clearBtn.style.display = hasChat ? "inline-block" : "none";
-        //     }
-        //     chatHistory.scrollTop = chatHistory.scrollHeight;
-        //     // chatHistory.style.display = "block";
-        //     // chatControls.style.display = "flex";
-        //     // chatHistory.scrollTop = chatHistory.scrollHeight;
-        // }
         function renderChat() {
             chatHistory.innerHTML = "";
 
@@ -193,11 +173,10 @@
             const hasChat = chatData.length > 0;
 
             chatHistory.style.display = hasChat ? "block" : "none";
-            chatControls.style.display = hasChat ? "flex" : "none";
 
             const clearBtn = document.getElementById("clearHistoryBtn");
             if (clearBtn) {
-                clearBtn.style.display = hasChat ? "inline-block" : "none";
+                clearBtn.style.display = hasChat ? "block" : "none";
             }
 
             chatHistory.scrollTop = chatHistory.scrollHeight;
@@ -323,7 +302,6 @@
             chatData = [];
             chatHistory.innerHTML = "";
             chatHistory.style.display = "none";
-            chatControls.style.display = "none";
             localStorage.removeItem("chatData");
             renderChat();
         }
