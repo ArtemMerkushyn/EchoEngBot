@@ -1,12 +1,11 @@
 body {
     font-family: sans-serif;
     background: #f4f4f4;
-    margin: 10px 0 10px 0;
-    padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    margin: 0;
 }
 
 .container {
@@ -180,13 +179,15 @@ button:hover {
 }
 
 .chat-history {
+    max-height: 350px;
+    overflow-y: auto;
+    overflow-x: hidden;
     text-align-last: left;  
     border-radius: 5px 5px 0 0;
     border: 1px solid #ddd;
     padding: 10px;
-    
     background: #f9f9f9;
-    display: none;
+    
 }
 
 .chat-entry {
