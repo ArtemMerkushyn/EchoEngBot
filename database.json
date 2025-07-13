@@ -1,16 +1,20 @@
 {
-  "hello": [
-    "Hi!",
-    "Hello!",
-    "Hey there!",
-    "Hi, nice to see you"
-  ],
-  "how are you": [
-    "I'm good!",
-    "Doing great!",
-    "All is well!"
-  ],
-  "what is your name": [
-    "EchoEngBot"
-  ]
+    "hello": [
+        "Hi!",
+        "Hello!",
+        "Hey there!",
+        "Hi, nice to see you",
+        "Good day"
+    ],
+    "how are you": [
+        "I'm good!",
+        "Doing great!",
+        "All is well!"
+    ],
+    "what is your name": [
+        "EchoEngBot"
+    ],
+    "\u0447": [
+        "\u0447\u0447"
+    ]
 }

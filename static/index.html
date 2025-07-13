@@ -149,6 +149,10 @@
             modal.style.zIndex = "-1";
             document.body.style.overflow = "auto";
             document.body.style.paddingRight = "";
+            const inputs = modal.querySelectorAll("input");
+            inputs.forEach(input => input.value = "");
+            const responseDivs = modal.querySelectorAll(".response");
+            responseDivs.forEach(div => div.innerText = "");
         }
 
         window.onclick = function(event) {
