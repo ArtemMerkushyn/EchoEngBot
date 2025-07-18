@@ -67,7 +67,7 @@ def chat():
 
     if matches:
         suggestion = matches[0]
-        return jsonify({"response": f"Maybe you meant: {suggestion}?"})
+        return jsonify({"response": f"Maybe you meant: '{suggestion}'?"})
 
     return jsonify({"response": "I don't know how to answer this. Please teach me!"})
 

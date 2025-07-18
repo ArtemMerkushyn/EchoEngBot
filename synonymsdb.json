@@ -1,15 +1,9 @@
 {
   "hello": [
-    "hi",
-    "hey",
-    "yo",
-    "howdy",
-    "good morning"
+    "hi"
   ],
-  "bye": [
-    "goodbye",
-    "see you",
-    "later",
-    "see you latter"
+  "how are you?": [
+    "what's up?",
+    "sup?"
   ]
 }
